@@ -68,4 +68,8 @@ public class Player {
         return tail;
     }
 
+    public boolean isCovering(Position position) {
+        return (headPosition.equals(position) || tail.contains(position));
+    }
+
 }

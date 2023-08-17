@@ -12,12 +12,15 @@ import com.dacarr.game.util.Direction;
 import com.dacarr.game.util.Player;
 import com.dacarr.game.util.Position;
 
+import java.util.ArrayList;
+
 public class SnakeGame extends ApplicationAdapter {
 
 	private OrthographicCamera camera;
 	private ShapeRenderer shapeRenderer;
 	private Player player;
 	private Rectangle target;
+	private ArrayList<Position> walls = new ArrayList<>();
 
 	private boolean gameStarted;
 
@@ -33,11 +36,13 @@ public class SnakeGame extends ApplicationAdapter {
 		player = new Player(16, 16);
 		target = new Rectangle(0, 0, 16, 16);
 
-		Position pos = generateRandomPosition();
+		Position pos = generateTargetPosition();
 		target.setPosition(pos.x(), pos.y());
 
 		timeBetweenFrames = 0;
 		gameStarted = false;
+
+		walls = new ArrayList<>();
 	}
 
 	@Override
@@ -91,17 +96,19 @@ public class SnakeGame extends ApplicationAdapter {
 		}
 
 		if (player.getHeadPosition().equals(new Position((int) target.x, (int) target.y))) {
-			Position pos = generateRandomPosition();
+			Position pos = generateTargetPosition();
+			addWall(new Position((int) target.x, (int) target.y), pos);
 			target.setPosition(pos.x(), pos.y());
 			player.setLength(player.getLength() + 1);
 		}
 
-		if (player.getTail().contains(player.getHeadPosition())) {
+		if (player.getTail().contains(player.getHeadPosition()) || walls.contains(player.getHeadPosition())) {
 			gameStarted = false;
 			player.setHeadPosition(new Position(256, 256));
 			player.getTail().clear();
+			walls.clear();
 			player.setLength(3);
-			Position pos = generateRandomPosition();
+			Position pos = generateTargetPosition();
 			target.setPosition(pos.x(), pos.y());
 		}
 
@@ -121,12 +128,16 @@ public class SnakeGame extends ApplicationAdapter {
 		}
 		shapeRenderer.setColor(Color.YELLOW);
 		shapeRenderer.rect(target.x, target.y, target.width, target.height);
+		shapeRenderer.setColor(Color.GRAY);
+		for (Position pos : walls) {
+			shapeRenderer.rect(pos.x(), pos.y(), 16, 16);
+		}
 		shapeRenderer.end();
 
 		if (!gameStarted) return;
 
 		timeBetweenFrames += Gdx.graphics.getDeltaTime();
-		if (!(timeBetweenFrames >= 1f/8f)) return;
+		if (!(timeBetweenFrames >= 1f/(8f + 0.1f * player.getLength() - 2))) return;
 		timeBetweenFrames = 0;
 
 		Position newPosition;
@@ -173,19 +184,32 @@ public class SnakeGame extends ApplicationAdapter {
 		shapeRenderer.dispose();
 	}
 
-	public Position generateRandomPosition() {
+	public Position generateTargetPosition() {
 		Position newPosition = null;
 		Position oldPosition = new Position((int) target.x, (int) target.y);
-		while (newPosition == null || newPosition.equals(oldPosition) || player.getTail().contains(newPosition) || player.getHeadPosition().equals(newPosition)) {
-			int upper = 31;
-			int lower = 0;
-
-			int x = (int) (Math.random() * (upper - lower)) + lower;
-			int y = (int) (Math.random() * (upper - lower)) + lower;
-
-			newPosition = new Position(x * 16, y * 16);
+		while (newPosition == null || newPosition.equals(oldPosition) || player.isCovering(newPosition) || walls.contains(newPosition)) {
+			newPosition = randomPosition();
 		}
 
 		return newPosition;
+	}
+
+	private void addWall(Position oldTarget, Position newTarget) {
+		Position pos = null;
+		while (pos == null || pos.equals(oldTarget) || pos.equals(newTarget) || player.isCovering(pos)) {
+			pos = randomPosition();
+		}
+
+		walls.add(pos);
+	}
+
+	private Position randomPosition() {
+		int upper = 31;
+		int lower = 0;
+
+		int x = (int) (Math.random() * (upper - lower)) + lower;
+		int y = (int) (Math.random() * (upper - lower)) + lower;
+
+		return new Position(x * 16, y * 16);
 	}
 }
