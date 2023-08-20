@@ -32,20 +32,9 @@ public class Position {
         return Objects.hash(x, y);
     }
 
-    public Position moveLeft() {
-        return new Position(this.x - 16, this.y);
-    }
-
-    public Position moveRight() {
-        return new Position(this.x + 16, this.y);
-    }
-
-    public Position moveUp() {
-        return new Position(this.x, this.y + 16);
-    }
-
-    public Position moveDown() {
-        return new Position(this.x, this.y - 16);
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
     }
 
 }

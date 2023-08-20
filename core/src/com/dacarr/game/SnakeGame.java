@@ -11,8 +11,10 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.dacarr.game.util.Direction;
 import com.dacarr.game.util.Player;
 import com.dacarr.game.util.Position;
+import com.dacarr.game.util.Vector2D;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SnakeGame extends ApplicationAdapter {
 
@@ -140,41 +142,8 @@ public class SnakeGame extends ApplicationAdapter {
 		if (!(timeBetweenFrames >= 1f/(8f + 0.1f * player.getLength() - 2))) return;
 		timeBetweenFrames = 0;
 
-		Position newPosition;
-		switch (player.getDirection()) {
-			case LEFT:
-				newPosition = player.getHeadPosition().moveLeft();
-				if (!(newPosition.x() < 0)) {
-					player.setHeadPosition(newPosition);
-				} else {
-					player.setHeadPosition(new Position(496, newPosition.y()));
-				}
-				break;
-			case RIGHT:
-				newPosition = player.getHeadPosition().moveRight();
-				if (!(newPosition.x() > 496)) {
-					player.setHeadPosition(newPosition);
-				} else {
-					player.setHeadPosition(new Position(0, newPosition.y()));
-				}
-				break;
-			case UP:
-				newPosition = player.getHeadPosition().moveUp();
-				if (!(newPosition.y() > 496)) {
-					player.setHeadPosition(newPosition);
-				} else {
-					player.setHeadPosition(new Position(newPosition.x(), 0));
-				}
-				break;
-			case DOWN:
-				newPosition = player.getHeadPosition().moveDown();
-				if (!(newPosition.y() < 0)) {
-					player.setHeadPosition(newPosition);
-				} else {
-					player.setHeadPosition(new Position(newPosition.x(), 496));
-				}
-				break;
-		}
+
+		player.move(new Vector2D(16, player.getDirection()));
 
 		player.setChangedDirection(false);
 	}

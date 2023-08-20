@@ -1,5 +1,7 @@
 package com.dacarr.game.util;
 
+import com.badlogic.gdx.math.Vector2;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -70,6 +72,45 @@ public class Player {
 
     public boolean isCovering(Position position) {
         return (headPosition.equals(position) || tail.contains(position));
+    }
+
+    public void move(Vector2D vector) {
+        Position newPosition;
+        tail.add(this.headPosition);
+        switch (vector.getDirection()) {
+            case LEFT:
+                newPosition = new Position(headPosition.x() - vector.getDistance(), headPosition.y());
+                if (!(newPosition.x() < 0)) {
+                    headPosition = newPosition;
+                } else {
+                    headPosition = new Position(496, newPosition.y());
+                }
+                break;
+            case RIGHT:
+                newPosition = new Position(headPosition.x() + vector.getDistance(), headPosition.y());
+                if (!(newPosition.x() > 496)) {
+                    headPosition = newPosition;
+                } else {
+                    headPosition = new Position(0, newPosition.y());
+                }
+                break;
+            case UP:
+                newPosition = new Position(headPosition.x(), headPosition.y() + vector.getDistance());
+                if (!(newPosition.y() > 496)) {
+                    headPosition = newPosition;
+                } else {
+                    headPosition = new Position(newPosition.x(), 0);
+                }
+                break;
+            case DOWN:
+                newPosition = new Position(headPosition.x(), headPosition.y() - vector.getDistance());
+                if (!(newPosition.y() < 0)) {
+                    headPosition = newPosition;
+                } else {
+                    headPosition = new Position(newPosition.x(), 496);
+                }
+                break;
+        }
     }
 
 }
