@@ -1,6 +1,8 @@
 package com.dacarr.game.util;
 
-import com.badlogic.gdx.math.Vector2;
+import com.dacarr.game.model.util.Direction;
+import com.dacarr.game.model.util.Position;
+import com.dacarr.game.model.util.Vector2D;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -70,7 +72,7 @@ public class Player {
         return tail;
     }
 
-    public boolean isCovering(Position position) {
+    public boolean isTouching(Position position) {
         return (headPosition.equals(position) || tail.contains(position));
     }
 

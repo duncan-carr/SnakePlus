@@ -1,6 +1,10 @@
-package com.dacarr.game.util;
+package com.dacarr.game.model.util;
 
+import com.dacarr.game.model.entity.Entity;
+
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Position {
 
@@ -35,6 +39,21 @@ public class Position {
     @Override
     public String toString() {
         return "(" + x + ", " + y + ")";
+    }
+
+    public static Position random(ArrayList<Entity> entities) {
+        int upper = 31;
+        int lower = 0;
+
+        int x = (int) (Math.random() * (upper - lower)) + lower;
+        int y = (int) (Math.random() * (upper - lower)) + lower;
+
+        Position pos = new Position(x * 16, y * 16);
+        if (entities.stream().anyMatch(e -> e.getPosition().equals(pos))) {
+            random(entities);
+        }
+
+        return pos;
     }
 
 }

@@ -1,4 +1,6 @@
-package com.dacarr.game.util;
+package com.dacarr.game.model.util;
+
+import com.dacarr.game.model.util.Direction;
 
 public class Vector2D {
 

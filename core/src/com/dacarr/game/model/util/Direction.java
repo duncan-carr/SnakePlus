@@ -1,4 +1,4 @@
-package com.dacarr.game.util;
+package com.dacarr.game.model.util;
 
 public enum Direction {
 

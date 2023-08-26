@@ -8,18 +8,21 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.dacarr.game.util.Direction;
+import com.dacarr.game.model.entity.Entity;
+import com.dacarr.game.model.util.Direction;
 import com.dacarr.game.util.Player;
-import com.dacarr.game.util.Position;
-import com.dacarr.game.util.Vector2D;
+import com.dacarr.game.model.util.Position;
+import com.dacarr.game.model.util.Vector2D;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class SnakeGame extends ApplicationAdapter {
 
 	private OrthographicCamera camera;
 	private ShapeRenderer shapeRenderer;
+
+	private ArrayList<Entity> entities;
+
 	private Player player;
 	private Rectangle target;
 	private ArrayList<Position> walls = new ArrayList<>();
@@ -30,6 +33,7 @@ public class SnakeGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 512, 512);
 
@@ -45,10 +49,14 @@ public class SnakeGame extends ApplicationAdapter {
 		gameStarted = false;
 
 		walls = new ArrayList<>();
+		entities = new ArrayList<>();
 	}
 
 	@Override
 	public void render() {
+
+
+
 		if (!gameStarted) {
 			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 				player.setDirection(Direction.LEFT);
@@ -153,32 +161,4 @@ public class SnakeGame extends ApplicationAdapter {
 		shapeRenderer.dispose();
 	}
 
-	public Position generateTargetPosition() {
-		Position newPosition = null;
-		Position oldPosition = new Position((int) target.x, (int) target.y);
-		while (newPosition == null || newPosition.equals(oldPosition) || player.isCovering(newPosition) || walls.contains(newPosition)) {
-			newPosition = randomPosition();
-		}
-
-		return newPosition;
-	}
-
-	private void addWall(Position oldTarget, Position newTarget) {
-		Position pos = null;
-		while (pos == null || pos.equals(oldTarget) || pos.equals(newTarget) || player.isCovering(pos)) {
-			pos = randomPosition();
-		}
-
-		walls.add(pos);
-	}
-
-	private Position randomPosition() {
-		int upper = 31;
-		int lower = 0;
-
-		int x = (int) (Math.random() * (upper - lower)) + lower;
-		int y = (int) (Math.random() * (upper - lower)) + lower;
-
-		return new Position(x * 16, y * 16);
-	}
 }
